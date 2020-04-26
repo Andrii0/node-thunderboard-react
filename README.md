@@ -158,6 +158,9 @@ This sample code will output the result like this:
   - Humidity    : 50.18 %
   - Temperature : 26.65 °C
   - UV Index    : 0
+  - Pressure    : 1004.928 mbar
+  - Light       : 76.61 lx
+  - Sound       : 31.22 dB
 - Disconnected Thunder Sense #28932
 ```
 
