@@ -1,17 +1,16 @@
 node-thunderboard-react
 ===============
 
-The node-thunderboard-react is a Node.js module which allows you to communicate with The [Thunderboard React Board Kit](http://www.silabs.com/products/wireless/pages/thunderboard-react-kit-sensor-cloud-connectivity.aspx) sold by Silicon Laboratories.
+The node-thunderboard-react is a Node.js module which allows you to communicate with The [Thunderboard Sense Board Kit](https://www.silabs.com/products/development-tools/thunderboard/thunderboard-sense-two-kit) sold by Silicon Laboratories.
 
-![Thunderboard React Board Kit](imgs/thunderboard-react-1.jpg)
-![Thunderboard React Board Kit](imgs/thunderboard-react-2.jpg)
+![Thunderboard React Board Kit](imgs/thunderboard-sense-2-callouts.jpg)
 
-This module exposes the APIs which allows you to access the Thunderboard React via BLE easily. This module is based on the document "[UG164: ThunderboardTM React (RD-0057-0201) User's Guide](http://www.silabs.com/Support%20Documents/TechnicalDocs/UG164-ThunderBoard-React.pdf)" published by Silicon Laboratories.
+This module exposes the APIs which allows you to access the Thunderboard Sense via BLE easily. This module is based on the document "[UG164: ThunderboardTM React (RD-0057-0201) User's Guide](http://www.silabs.com/Support%20Documents/TechnicalDocs/UG164-ThunderBoard-React.pdf)" published by Silicon Laboratories.
 
 The node-thunderboard-react provides you with the APIs as follows:
 
-* Discovery the Thunderboard React Board Kit(s)
-* Access the all services supported by the Thunderboard React Board Kit as follows:
+* Discovery the Thunderboard Sense Board Kit(s)
+* Access the all services supported by the Thunderboard Sense Board Kit as follows:
 	* Device Information Service
 	* Battery Service
 	* Environmental Sensing Service
@@ -35,7 +34,7 @@ The early versions of this module depended on [noble](https://github.com/sandeep
 ```
 $ cd ~
 $ npm install @abandonware/noble
-$ npm install node-thunderboard-react
+$ npm install Andrii0/node-thunderboard-react
 ```
 ---------------------------------------
 ## Table of Contents
@@ -65,6 +64,9 @@ $ npm install node-thunderboard-react
 		* [`getHumidity(callback)` method](#getHumidity-method)
 		* [`getTemperature(callback)` method](#getTemperature-method)
 		* [`getUvIndex(callback)` method](#getUvIndex-method)
+		* [`getPressure(callback)` method](#getPressure-method)       
+		* [`getLight(callback)` method](#getLight-method)
+		* [`getSoundLevel(callback)` method](#getSoundLevel-method)        
 		* [`getEnvironmentalSensing(callback)` method](#getEnvironmentalSensing-method)
 		* [`getAmbientLight(callback)` method](#getAmbientLight-method)
 		* [`startMonitorCsc([callback])` method](#startMonitorCsc-method)
@@ -93,18 +95,14 @@ $ npm install node-thunderboard-react
 ---------------------------------------
 ## <a name="Operating-suggestions"> Operating suggestions</a>
 
-When you use the Thunderboard React Board Kit, don't forget turn it on. Be sure that the SW3 is set to "Vbat".
-
-![SW3](imgs/sw3.jpg)
-
-Besides, before the discovery process is about to start, be sure to press a button (ether SW0 or SW1). Once the button is pressed, the Thunderboard React Board Kit send advertising packets for 30 seconds.
+Before the discovery process is about to start, be sure to press a button (ether SW0 or SW1). Once the button is pressed, the Thunderboard React Board Kit send advertising packets for 30 seconds.
 
 ![SW0 adn SW1](imgs/sw0-1.jpg)
 
 ---------------------------------------
 ## <a name="Quick-Start"> Quick Start</a>
 
-This section shows how to discover Thunderboard React Board Kit(s), how to get a sensor value the device, and how to set a value to the device.
+This section shows how to discover Thunderboard Sense Board Kit(s), how to get a sensor value the device, and how to set a value to the device.
 
 ### <a name="Quick-Start-1"> Reading the sensor data </a>
 
@@ -139,6 +137,9 @@ function getEnvironmentalSensing(device) {
     console.log('  - Humidity    : ' + res.humidity + ' %');
     console.log('  - Temperature : ' + res.temperature + ' °C');
     console.log('  - UV Index    : ' + res.uvIndex);
+    console.log('  - Pressure    : ' + res.pressure + ' mbar');
+    console.log('  - Light       : ' + res.light + ' lx');
+    console.log('  - Sound       : ' + res.sound + ' dB');
     // Disconnect the device
     device.disconnect(() => {
       console.log('- Disconnected ' + device.localName);
@@ -151,13 +152,13 @@ function getEnvironmentalSensing(device) {
 This sample code will output the result like this:
 
 ```
-- Found Thunder React #28932
-- Connected Thunder React #28932
+- Found Thunder Sense #28932
+- Connected Thunder Sense #28932
 - Sensored data:
   - Humidity    : 50.18 %
   - Temperature : 26.65 °C
   - UV Index    : 0
-- Disconnected Thunder React #28932
+- Disconnected Thunder Sense #28932
 ```
 
 ### <a name="Quick-Start-2"> Monitoring the sensor data </a>
@@ -214,8 +215,8 @@ function startMonitorOrientation(device) {
 This sample code will output the result like this:
 
 ```
-- Found Thunder React #28932
-- Connected Thunder React #28932
+- Found Thunder Sense #28932
+- Connected Thunder Sense #28932
 - Orientation:
   - alpha :3.26°
   - beta  :-0.45°
@@ -227,7 +228,7 @@ This sample code will output the result like this:
 
 ...
 
-- Disconnected Thunder React #28932
+- Disconnected Thunder Sense #28932
 ```
 
 ### <a name="Quick-Start-3"> Setting data </a>
@@ -581,6 +582,54 @@ device.getUvIndex((error, res) => {
 
 This method reads the characteristic UUID `0x2a76` of the Environmental Sensing Service (UUID: `0x181a`).
 
+#### <a name="getPressure-method"> getPressure(*callback*)</a>
+
+This method reads the UV Index from the device. When the process was completed, the `callback` will be called. The two arguments will be passed to the `callback`: the `Error` object and `Response` object. The `Response` object is a hash object having the properties as follows:
+
+Property      | Type   | Description
+:-------------|:-------|:-----------
+`pressure`    | Number | The Air Pressure as an float in units of mbar
+
+```JavaScript
+device.getPressure((error, res) => {
+  console.log(res.pressure); // 1
+});
+```
+
+This method reads the characteristic UUID `0x2a6d` of the Environmental Sensing Service (UUID: `0x181a`).
+
+#### <a name="getLight-method"> getLight(*callback*)</a>
+
+This method reads the Ambient Light from the device. When the process was completed, the `callback` will be called. The two arguments will be passed to the `callback`: the `Error` object and `Response` object. The `Response` object is a hash object having the properties as follows:
+
+Property      | Type   | Description
+:-------------|:-------|:-----------
+`light`       | Number | The ambient light as an float in units of lux.
+
+```JavaScript
+device.getLight((error, res) => {
+  console.log(res.light); // 1
+});
+```
+
+This method reads the characteristic UUID `0xc8546913bfd945eb8dde9f8754f4a32e` of the Environmental Sensing Service (UUID: `0x181a`).
+
+#### <a name="getSoundLevel-method"> getSoundLevel(*callback*)</a>
+
+This method reads the Sound Level from the device. When the process was completed, the `callback` will be called. The two arguments will be passed to the `callback`: the `Error` object and `Response` object. The `Response` object is a hash object having the properties as follows:
+
+Property      | Type   | Description
+:-------------|:-------|:-----------
+`sound`       | Number | The sound level as an float in units of dB
+
+```JavaScript
+device.getSoundLevel((error, res) => {
+  console.log(res.sound); // 1
+});
+```
+
+This method reads the characteristic UUID `0xc8546913bf0245eb8dde9f8754f4a32e` of the Environmental Sensing Service (UUID: `0x181a`).
+
 #### <a name="getEnvironmentalSensing-method"> getEnvironmentalSensing(*callback*)</a>
 
 This method reads the Humidity, the Temperature, and the UV Index at a time. When the process was completed, the `callback` will be called. The two arguments will be passed to the `callback`: the `Error` object and `Response` object. The `Response` object is a hash object having the properties as follows:
@@ -590,12 +639,18 @@ Property      | Type   | Description
 `humidity`    | Number | The humidity as an float in units of %.
 `temperature` | Number | The temperature as an float in units of °C.
 `uvIndex`     | Number | The UV Index as an integer (unit-less)
+`pressure`    | Number | The Air Pressure as an float in units of mbar
+`light`       | Number | The ambient light as an float in units of lux.
+`sound`       | Number | The sound level as an float in units of dB
 
 ```JavaScript
 device.getEnvironmentalSensing((error, res) => {
   console.log(res.humidity + ' %');     // "53.34 %"
   console.log(res.temperature + ' °C'); // "29.9 °C"
   console.log(res.uvIndex);             // 1
+  console.log(res.pressure + ' mbar');
+  console.log(res.light + ' lx');
+  console.log(res.sound + ' dB');
 });
 ```
 
